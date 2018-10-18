@@ -1,0 +1,54 @@
+from django.contrib import admin
+
+# Register your models here.
+from derby_darts.models import Team, UserPrivileges, League, Season, Competition, CompetitionFixture, Result, Section, \
+    Player, Fixture, SeasonPointDeduction, SeasonStanding, UnprocessedMessage
+
+admin.site.register(League)
+admin.site.register(Competition)
+admin.site.register(CompetitionFixture)
+admin.site.register(Fixture)
+admin.site.register(Team)
+admin.site.register(Season)
+admin.site.register(Section)
+admin.site.register(UserPrivileges)
+# End of admin py (Wrote this for test)
+
+
+@admin.register(Result)
+class ResultAdmin(admin.ModelAdmin):
+    list_display = ('__str__', 'date', 'get_fixture', 'home_team_score', 'away_team_score', 'season')
+    list_filter = ('fixture__date', 'fixture__home_team', 'fixture__away_team')
+
+    def get_fixture(self, obj):
+        return obj.fixture
+
+    def date(self, obj):
+        _ = self
+        return obj.fixture.date
+
+    def season(self, obj):
+        _ = self
+        return obj.fixture.season.name
+
+    get_fixture.admin_order_field = 'date'
+
+
+@admin.register(Player)
+class PlayerAdmin(admin.ModelAdmin):
+    list_display = ['name', 'team', 'phone_number']
+    list_filter = ['team']
+
+
+@admin.register(SeasonPointDeduction)
+class DeductionAdmin(admin.ModelAdmin):
+    def get_form(self, request, obj=None, **kwargs):
+        form = super(DeductionAdmin, self).get_form(request, obj, **kwargs)
+        latest_season = Season.objects.filter(league=request.league).order_by('-start_date').first()
+        form.base_fields['standing'].queryset = SeasonStanding.objects.filter(season=latest_season)
+
+        return form
+
+@admin.register(UnprocessedMessage)
+class UnprocessedMessageAdmin(admin.ModelAdmin):
+    list_display = ['sender', 'text', 'date']

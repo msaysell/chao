@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+{% load staticfiles %}
+<html ng-app="Darts">
+<head lang="en">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="League information for the Derby Tuesday Pub and Club League"/>
+    <title>{% block page_title %}{{ request.league.name }}{% endblock %}</title>
+    <link rel="shortcut icon" href="{%  static 'favicon.ico' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/style.css' %}" type="text/css" />
+    <link rel="stylesheet" href="{% static 'assets/bootstrap/bootstrap-3.3.4-dist/css/bootstrap.min.css' %}"/>
+    <link rel="stylesheet" href="{% static 'assets/css/bootstrap-datepicker.min.css' %}"/>
+    <link rel="stylesheet" href="{% static 'assets/css/fileinput.min.css' %}"/>
+    <link rel="stylesheet" href="{% static 'assets/css/ionicons.css' %}" type="text/css" />
+    <script src="{% static "assets/js/jquery-2.2.0.min.js" %}"></script>
+    <script src="{% static 'assets/bootstrap/bootstrap-3.3.4-dist/js/bootstrap.min.js' %}"></script>
+    <script src="{% static "assets/js/script.js" %}"></script>
+    <script src="{% static "assets/js/moment.min.js" %}"></script>
+    <script src="{% static "assets/js/bootstrap-datepicker.min.js" %}"></script>
+    <script src="{% static "assets/js/fileinput/fileinput.min.js" %}"></script>
+    <script src="{% static "assets/js/angular.min.js" %}"></script>
+    <script src="{% static "assets/js/angular-route.min.js" %}"></script>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-73894873-1"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-73894873-1');
+    </script>
+
+    <script>
+        var darts_app = angular.module('Darts', ['ngRoute']);
+{#      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){#}
+{#      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),#}
+{#      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)#}
+{#      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');#}
+{##}
+{#      ga('create', 'UA-73894873-1', 'auto');#}
+{#      ga('send', 'pageview');#}
+
+    </script>
+    {% if user.username == 'michael.saysell' %}
+        <script src="{% static "assets/js/ng_darts.js" %}"></script>
+    {% endif %}
+    {% block extended_head %}{% endblock %}
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-default navbar-fixed-top">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-main">
+                        <span class="sr-only">Toggle Navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="{% url 'derby_darts:home' %}">{{ request.league.name }}</a>
+                </div>
+                <div id="navbar-main" class="collapse navbar-collapse">
+                    <ul class="nav navbar-nav">
+                         <li><a href="{% url 'derby_darts:league' %}">Leagues</a></li>
+                        {% if user.username == 'michael.saysell'%}
+                            <li class="dropdown">
+                                    <a href="#" class="dropdown-toggle" type="button" id="fixtures_dropdown" data-toggle="dropdown" aria-expanded="false">Data<span class="caret"></span></a>
+                                    <ul class="dropdown-menu" role="menu" aria-labelledby="fixtures_dropdown">
+                                        <li role="presentation"><a role="menuitem" href="{% url 'derby_darts:new_result' %}">New Result</a> </li>
+{#                                        <li role="presentation"><a role="menuitem"  href="{% url 'derby_darts:new_league' %}">New League</a> </li>#}
+                                        <li role="presentation"><a role="menuitem" href="{% url 'derby_darts:new_season' %}">New Season</a> </li>
+                                        <li role="presentation"><a role="menuitem" href="{% url 'derby_darts:new_team' %}">New Team</a></li>
+{#                                        <li role="presentation"><a role="menuitem" href="{% url 'derby_darts:new_player' %}">New Player</a> </li>#}
+                                        <li role="presentation"><a role="menuitem" href="{% url 'derby_darts:new_fixture' %}">New Fixture</a> </li>
+                                        <li role="presentation"><a role="menuitem" href="{% url 'derby_darts:new_competition_fixture' %}">New Competition Fixture</a> </li>
+                                        <li role="presentation"><a role="menuitem" href="{% url 'derby_darts:new_competition' %}">New Competition</a> </li>
+{#                                        <li role="presentation"><a role="menuitem" href="{% url 'Fixtures:update_results' %}">New Result2</a> </li>#}
+                                        <li role="presentation"><a role="menuitem" href="{% url 'Fixtures:import_fixtures' %}">Import Fixtures</a></li>
+                                    </ul>
+                            </li>
+                        {% endif %}
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" type="button" id="fixtures_dropdown" data-toggle="dropdown" aria-expanded="false">Fixtures<span class="caret"></span></a>
+                            <ul class="dropdown-menu" role="menu" aria-labelledby="fixtures_dropdown">
+                                <li role="presentation"><a role="menuitem" href="{% url 'Fixtures:fixtures_by_date' %}">By Date</a></li>
+                                <li role="presentation"><a role="menuitem" href="{% url 'Fixtures:fixtures_by_team' %}">By Team</a></li>
+                            </ul>
+                        </li>
+                        <li><a href="{% url 'derby_darts:team_list' %}">Teams</a>
+                        <li><a href="{% url 'Rules:browse' %}">Rules</a>
+                        <li><a href="{% url 'contact' %}">Contact</a>
+                        </li>
+                        </ul>
+                        <ul class="nav navbar-nav navbar-right">
+                        <li>
+                            {% if user.is_anonymous %}
+                                <a href="{% url 'login' %}"><span class="glyphicon glyphicon-log-in"></span> Log In</a>
+                            {% else %}
+                                <a href="{% url 'login' %}">Signed in as {{ user.username }} <span class="glyphicon glyphicon-log-out"></span></a>
+                            {% endif %}
+                        </li>
+                        </ul>
+
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div class="container">
+    {% block content %}{% endblock %}
+    </div>
+
+    <footer class="container panel-footer">
+        {% if request.league.short_url == "darts" or user.username == 'michael.saysell' %}
+            <p class="text-center"><strong>{{ request.league.name }} is sponsored by <a href="https://www.facebook.com/JaxxDerby/">Jaxx Derby</a></strong></p>
+            <img class="img-responsive center-block" src="{% static 'assets/img/jaxx_derby_logo.png' %}"/>
+        {% endif %}
+    </footer>
+
+</body>
+</html>

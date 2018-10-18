@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+{% block page_title %}
+    Set Results
+{% endblock %}
+
+{% block content %}
+    <script type="text/javascript">
+        function MakePostEditable(post_id, get_url)
+        {
+            var parent = $('#' + post_id);
+            var title = parent.children('.panel-heading');
+            var body = parent.children('.panel-body');
+
+            $.get(get_url,
+            function(data){
+                $("#edit_post_dialog_form")
+                        .attr('action', get_url);
+                $("#edit_post_dialog_form .modal-body").empty().prepend(data);
+                $("#edit_post_dialog").modal({
+                      autoOpen: false,
+                      modal: true});
+            });
+        }
+    </script>
+    <div class="panel table-responsive">
+    <table class="table table-condensed table-hover">
+        <thead>
+            <tr>
+                <td>Home Team</td>
+                <td>Home Score</td>
+                <td>Away Score</td>
+                <td>Away Team</td>
+                <td></td>
+            </tr>
+        </thead>
+        {% for fixture in object_list %}
+            <tr>
+                <td>{{ fixture.home_team }}</td>
+                <td><input type="text" id="home{{ fixture.id }}"/></td>
+                <td><input type="text" id="away{{ fixture.id }}"/></td>
+                <td>{{ fixture.away_team }}</td>
+
+                {% url 'Fixtures:get_update_results_form' fixture.id as edit_post_url %}
+                <td><button class="btn btn-sm btn-warning float-right" data-toggle="modal" data-target="#edit_post_dialog" onclick="MakePostEditable({{ fixture.id  }}, '{{ edit_post_url }}')">
+                                <span class="glyphicon glyphicon-edit"></span>Edit
+                            </button></td>
+            </tr>
+        {% endfor %}
+    </table>
+    </div>
+    <nav>
+        <ul class="pager">
+                {% if page_obj.has_previous %}
+                    <li class="previous"><a href="?page={{ page_obj.previous_page_number }}" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>
+                {% endif %}
+
+                <span class="current">
+                    Page {{ page_obj.number }} of {{ paginator.num_pages }}.
+                </span>
+                {% if page_obj.has_next %}
+                    <li class="next"><a href="?page={{ page_obj.next_page_number }}"><span aria-hidden="true">&raquo;</span></a></li>
+                {% endif %}
+        </ul>
+    </nav>
+
+    <div class="modal fade" role="dialog" id="edit_post_dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Edit Result</h4>
+                </div>
+                    <form class="form-horizontal" id="edit_post_dialog_form" method="post">
+                        {% csrf_token %}
+                        <div class="modal-body">
+                        </div>
+                      <div class="modal-footer">
+                            <input class="btn btn-primary" type="submit">
+                            <input class="btn btn-primary" data-dismiss="modal" value="Close" type="button">
+                      </div>
+                    </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}

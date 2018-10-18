@@ -1,0 +1,16 @@
+{% extends 'base_form.html' %}
+
+{% block formcontroller %}
+    ng-controller="ResultFormCtrl"
+{% endblock %}
+
+{% block form_block %}
+    <form name="{{ form.form_name }}" method="post">
+        {% csrf_token %}
+        {{ form }}
+        <button ng-click="submit()" class="btn btn-lg btn-primary btn-block" type="submit">Submit</button>
+    </form>
+    {% verbatim %}
+        <div class="alert alert-success" role="alert" ng-repeat="message in messages">{{ message }}</div>
+    {% endverbatim %}
+{% endblock form_block %}

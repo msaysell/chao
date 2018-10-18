@@ -1,0 +1,141 @@
+{% extends 'base.html' %}
+{% load markdown_deux_tags %}
+{% block page_title %}
+    League Rules
+{% endblock  %}
+
+{% block content %}
+    {% with can_edit=user.privileges.can_modify_rules %}
+    {% if can_edit %}
+    <script type="text/javascript">
+        function DeleteRule(owner, rule_id)
+        {
+            DeleteItem(owner, "{% url 'Rules:delete_rule' 0 %}".replace("0", rule_id));
+        }
+        function DeleteCategory(owner, category_id)
+        {
+            DeleteItem(owner, "{% url 'Rules:delete_category' 0 %}".replace("0", category_id));
+        }
+        function MakePostEditable(post_id, get_url)
+        {
+            var parent = $('#' + post_id);
+            var title = parent.children('.panel-heading');
+            var body = parent.children('.panel-body');
+
+            $.get(get_url,
+            function(data){
+                $("#new_rule_dialog .form")
+                        .attr('action', get_url);
+                $("#new_rule_dialog .modal-body").empty().prepend(data);
+                $("#new_rule_dialog").modal({
+                      autoOpen: false,
+                      modal: true});
+            });
+        }
+    </script>
+
+    <div class="modal fade" id="confirm-delete" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    ...
+                </div>
+                <div class="modal-body">
+                    ...
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                    <a class="btn btn-danger btn-ok">Delete</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <button type="button" class="btn btn-success" data-toggle="modal" data-target="#new_category_dialog">Create New Category</button>
+    <div class="modal fade" role="dialog" id="new_category_dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>New Category</h3>
+                </div>
+                <div class="modal-body">
+                    <form class="form" action="{% url 'Rules:add_category' %}" method="post">
+                        {% csrf_token %}
+                        <div class="panel-body form-group">
+                        <label>
+                                Description
+                                <input class="form-control" type="text" name="description"/>
+                            </label>
+                        </div>
+                        <button class="btn btn-primary btn-block" type="submit">Submit</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" role="dialog" id="new_rule_dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>New Rule</h3>
+                </div>
+                <form class="form" method="post">
+                    {% csrf_token %}
+                <div class="modal-body">
+                </div>
+                <button class="btn btn-primary btn-block" type="submit">Submit</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+    {% for category in categories %}
+        <div class="panel panel-default">
+            <div class="panel-heading">
+            <span class="panel-title h2">{{ category.name }}</span>
+                {% if can_edit %}
+                    {% url 'Rules:get_edit_category_form' category.id as edit_category_url %}
+                    <button class="btn btn-sm btn-warning float-right"
+                            data-toggle="modal"
+                            data-target="#new_rule_dialog"
+                            onclick="MakePostEditable({{ category.id }}, '{{ edit_category_url }}')">
+                        <span class="glyphicon glyphicon-edit">&nbsp;</span>Edit
+                    </button>
+                    <button class="btn btn-sm btn-danger float-right"
+                            onclick="{% url 'Rules:delete_category' category.id %}">
+                        <span class="ion-android-trash">&nbsp;</span>Delete
+                    </button>
+                {% endif %}
+            </div>
+            <div class="panel-body">
+                <ol>
+                    {% for rule in category.rule_set.all %}
+                        <li id="rule{{ rule.id }}">
+                            <span>{{ rule.description|markdown }}</span>
+                            {% if can_edit %}
+                                {% url 'Rules:get_edit_rule_form' rule.id as edit_rule_url %}
+                                <button class="btn btn-sm btn-warning"
+                                        data-toggle="modal"
+                                        data-target="#new_rule_dialog"
+                                        onclick="MakePostEditable({{ rule.id }}, '{{ edit_rule_url }}')">
+                                    <span class="glyphicon glyphicon-edit"></span>Edit
+                                </button>
+                                <form method="post" action="{% url 'Rules:delete_rule' rule.id %}">
+                                    {% csrf_token %}
+                                    <button class="btn btn-sm btn-danger"
+                                            type="submit"><span class="ion-android-trash">&nbsp;</span>Delete</button>
+                                </form>
+                            {% endif %}
+                        </li>
+                    {% endfor %}
+                </ol>
+                {% if can_edit %}
+                <button type="button" class="btn btn-success" data-toggle="modal" data-target="#new_rule_dialog{{ category.id }}">Create New Rule</button>
+
+                {% endif %}
+            </div>
+        </div>
+
+    {% endfor %}
+    {% endwith %}
+{% endblock %}

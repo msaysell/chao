@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block page-title %}
+    {{ form_title }}
+{% endblock %}
+
+{% block content %}
+
+    <div {% block formcontroller %}{% endblock %} class="panel panel-default panel-small">
+        <div class="panel-heading">{{ form_title }}</div>
+        <div class="panel-body">
+            {% block form_block %}
+            <form method="post" ng-non-bindable>
+                {% csrf_token %}
+                {% for field in form %}
+                    <div class="form-group {% if field.errors %}has-feedback has-error{% endif %}">
+                        {{ field.label_tag }}
+                        {{ field }}
+                        {% if field.errors %}
+                            <span class="glyphicon glyphicon-warning-sign form-control-feedback" aria-hidden="true"></span>
+                            {{ field.errors }}
+                        {% endif %}
+                    </div>
+                {% endfor %}
+                <button class="btn btn-lg btn-primary btn-block" type="submit">Submit</button>
+            </form>
+            {% endblock form_block %}
+        </div>
+    </div>
+    {% if messages %}
+    <div id="alerts">
+    {% for message in messages %}
+        <div class="alert alert-warning alert-dismissible" role="alert">
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          {{ message }}
+        </div>
+    {% endfor %}
+    </div>
+    {% endif %}
+    <script type="text/javascript">
+        $('#datepicker').datepicker({autoclose: true, dateFormat: "dd/mm/yy", todayHighlight: true});
+    </script>
+{% endblock %}

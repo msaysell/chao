@@ -1,0 +1,161 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% load markdown_deux_tags %}
+{% block extended_head %}
+    {% if can_edit %}
+    <script type="text/javascript">
+
+        function add_wall_post(title, message)
+        {
+            $('#posts').prepend(
+                $('<div>').addClass("panel panel-default")
+                    .append($('<div>').addClass("panel-heading").text(title))
+                    .append($('<div>').addClass("panel-body").append(message))
+            );
+        }
+
+        function delete_wall_post(owner, id)
+        {
+            var url = "{% url 'derby_darts:delete_post' 0 %}".replace('0', id);
+            DeleteItem(owner, url);
+        }
+        function MakePostEditable(post_id, get_url)
+        {
+            var parent = $('#' + post_id);
+            var title = parent.children('.panel-heading');
+            var body = parent.children('.panel-body');
+
+            $.get(get_url,
+            function(data){
+                $("#edit_post_dialog_form")
+                        .attr('action', get_url);
+                $("#edit_post_dialog_form .modal-body").empty().prepend(data);
+                $("#edit_post_dialog").modal({
+                      autoOpen: false,
+                      modal: true});
+            });
+        }
+        $(document).ready(function(){
+        var frm = $('#form_table');
+        frm.submit(function (e) {
+            e.preventDefault();
+            $.ajax({
+                type: frm.attr('method'),
+                url: frm.attr('action'),
+                data: frm.serialize(),
+                success: function (data) {
+                    add_wall_post(data.title, data.description);
+                    $('#form_table')[0].reset();
+                    setPopup('alert-success', data['message']);
+                    $('#new_comment_dialog').modal('hide');
+                },
+                error: function(data) {
+                    setPopup('alert-danger', data['message']);
+                }
+            });
+            return false;
+        });
+
+        var edit_post_form = $('#edit_post_dialog_form');
+        edit_post_form.submit(function (e) {
+            e.preventDefault();
+            $.ajax({
+                type: edit_post_form.attr('method'),
+                url: edit_post_form.attr('action'),
+                data: edit_post_form.serialize(),
+                success: function (data) {
+                    $('#edit_post_dialog').modal('hide');
+                    var id = data['id'];
+                    var parent = $('#' + id);
+
+                    parent.find('.panel-heading .post-title').text(data['title']);
+                    parent.find('.panel-body .post-description').html(data['description']);
+                },
+                error: function (data) {
+                    setPopup('alert-danger', "Something went wrong!");
+                }
+            });
+            return false;
+        });
+    });
+        {% endif %}
+    </script>
+{% endblock %}
+{% block page_title %}{{ request.league.name }}{% endblock %}
+
+{% block content %}
+    {% if can_edit %}
+    <div id="popup" style="display: none"></div>
+    <div class="modal fade" role="dialog" id="new_comment_dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>New Comment</h3>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal" id="form_table" action="{% url 'derby_darts:modify_wall_post' %}" method="post" ng-non-bindable>
+                        {% csrf_token %}
+                        <table>
+                            {{ new_form }}
+                        </table>
+                        <input class="btn btn-primary" type="submit" value="Submit" />
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <button type="button" class="btn btn-success" data-toggle="modal" data-target="#new_comment_dialog">Create New Comment</button>
+
+    {% endif %}
+    <div id="posts">
+        {% for post in wallpost_list %}
+            <div id="{{ post.id }}" class="panel panel-default">
+                <div class="panel-heading">
+                    <div class="clearfix">
+                        <h4 class="post-title pull-left text-left">{{ post.title }}</h4>
+                        {% if can_edit %}
+                            <div class="button-group pull-right">
+                            {% url 'derby_darts:get_edit_post_form' post.id as edit_post_url %}
+                            <button class="btn btn-default" data-toggle="modal" data-target="#edit_post_dialog" onclick="MakePostEditable({{ post.id }}, '{{ edit_post_url }}')">
+                                <span class="glyphicon glyphicon-edit"></span> Edit
+                            </button>
+                            <button class="btn btn-default" onclick="delete_wall_post(this.parentNode.parentNode.parentNode, {{ post.id }})">
+                                <span class="glyphicon glyphicon-remove-sign"></span> Delete
+                            </button>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="panel-body">
+                    <div class="post-description">
+                        {{ post.content|markdown }}
+                    </div>
+                <p class="text-right">{{ post.date_created }}</p>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+    {% include 'pagination.html' %}
+
+    {% if can_edit %}
+        <div class="modal fade" role="dialog" id="edit_post_dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">Edit Post</h4>
+                    </div>
+                        <form class="form-horizontal" id="edit_post_dialog_form" method="post" ng-non-bindable>
+                            {% csrf_token %}
+                            <div class="modal-body">
+                            </div>
+                          <div class="modal-footer">
+                                <input class="btn btn-primary" type="submit">
+                                <input class="btn btn-primary" data-dismiss="modal" value="Close" type="button">
+                          </div>
+                        </form>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+{% endblock %}

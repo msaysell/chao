@@ -1,0 +1,144 @@
+{% extends 'base.html' %}
+{% load humanize %}
+{% block page_title %}
+    Fixtures for teams
+{% endblock %}
+
+{% block content %}
+
+    <script>
+        var module = angular.module('Darts', ['ngRoute']);
+        module.controller('MyFixtureController', ['$scope', '$http', function($scope, $http){
+            $scope.teams = [];
+            $scope.fixtures = [];
+            $scope.results = [];
+            $scope.sectionChange = function(){
+                $http({
+                    method: 'GET',
+                    url: "{% url 'Fixtures:seasonal_teams_for_section' season_id=current_season.id section=0 %}".replace('0', $scope.section.season_section)
+                }).success(function(response){
+                    $scope.teams = response.teams;
+                    $scope.team = response.teams[0];
+                    $scope.teamChange();
+                });
+            };
+            $scope.teamChange = function(){
+                var url = "{% url 'Fixtures:seasonal_fixtures_for_team' season_id=current_season.id team_name='squiggle' %}".replace('squiggle', $scope.team);
+                $http({
+                    method: 'GET',
+                    url: url
+                }).success(function(response){
+                    $scope.fixtures = [];
+                    $scope.results = [];
+                    var newFixtures = [];
+                    response.fixtures.forEach(function(fixture){
+                        var date = moment(new Date(fixture.date));
+                        fixture.date = date.format("MMMM DD, YYYY");
+                        if(date.isBefore(new Date(), 'day')){
+                            $scope.results.push(fixture);
+                        }
+                        else{
+                            newFixtures.push(fixture);
+                        }
+                    });
+                    $scope.fixtures = newFixtures;
+                });
+            };
+            var init = function(){
+                $http({
+                    method: 'GET',
+                    url: '{% url 'Fixtures:sections_and_teams' season_id=current_season.id %}'
+                }).success(function(response){
+                    $scope.sections = response.sections;
+                    $scope.section = response.sections[0];
+                    $scope.sectionChange();
+                });
+            };
+            init();
+        }]);
+    </script>
+    <div ng-controller="MyFixtureController">
+        <div class="row">
+            <div class="col-sm-8">
+                <h3>{{ current_season.get_name }}</h3>
+            </div>
+            <div class="col-sm-4">
+                <div class="pull-right dropdown">
+                    <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                        Other seasons
+                        <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                        {% for season in all_seasons %}
+                            <li>
+                                {% if season.id == current_season.id %}
+                                    <a href="#"><span class="ion ion-arrow-right-b">&nbsp;</span> {{ season.name }}</a>
+                                {% else %}
+                                    <a href="{% url 'Fixtures:season_fixtures_by_team' season.id %}">{{ season.name }}</a>
+                                {% endif %}
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+         <div class="row">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <form class="form-inline">
+                    <div class="form-group dropdown">
+                    <label for="section_list">Sections</label>
+                     <select id="section_list"
+                            ng-change="sectionChange()"
+                            ng-model="section"
+                            ng-options="s.season_section__name for s in sections"
+                            class="form-control"></select></div>
+                    <div class="form-group dropdown">
+                        <label for="team_list">Teams</label>
+                        <select id="team_list"
+                            ng-change="teamChange()"
+                            ng-model="team"
+                            ng-options="t for t in teams"
+                            class="form-control"></select>
+                    </div>
+                    </form>
+                </div>
+                <div class="panel-body">
+                    <ul class="nav nav-tabs" role="tablist">
+                    <li role="presentation" class="active"><a href="#Fixtures" aria-controls="home" role="tab" data-toggle="tab">Fixtures&nbsp;<span class="badge alert-info">{% verbatim %}{{ fixtures.length }}{% endverbatim %}</span></a></li>
+                    <li role="presentation"><a href="#Results" aria-controls="profile" role="tab" data-toggle="tab">Results&nbsp;<span class="badge alert-info">{% verbatim %}{{ results.length }}{% endverbatim %}</span></a></li>
+                    </ul>
+                    <div id="fixture_tabs" class="tab-content">
+                        <div role="tabpanel" class="tab-pane fade in active" id="Fixtures">
+                            <ul class="list-unstyled">
+                                <li ng-repeat="fixture in fixtures">
+                                    {% verbatim %}
+                                        <h6 class="text-center">{{ fixture.date }}</h6>
+                                        <div>
+                                            <h5 class="text-center" ng-hide="fixture.competitionfixture__competition__name == null">{{ fixture.competitionfixture__competition__name }}</h5>
+                                            <h5 class="text-center" ng-hide="fixture.home_team__name == null">{{ fixture.home_team__name }} - {{ fixture.away_team__name }}</h5>
+                                       </div>
+                                        <hr/>
+                                    {% endverbatim %}
+                                </li>
+                            </ul>
+                        </div>
+                        <div role="tabpanel" class="tab-pane fade" id="Results">
+                            <ul class="list-unstyled">
+                                <li ng-repeat="fixture in results">
+                                    {% verbatim %}
+                                        <h6 class="text-center">{{ fixture.date }}</h6>
+                                        <div ng-switch="fixture.home_team__name == null">
+                                            <h5 class="text-center" ng-switch-when="true">{{ fixture.competitionfixture__competition__name }}</h5>
+                                            <h5 class="text-center" ng-switch-default>{{ fixture.home_team__name }} {{ fixture.result__home_team_score }} - {{ fixture.result__away_team_score }} {{ fixture.away_team__name }}</h5>
+                                        </div>
+                                        <hr/>
+                                    {% endverbatim %}</li>
+                            </ul>
+                        </div>
+                    </div>
+                 </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

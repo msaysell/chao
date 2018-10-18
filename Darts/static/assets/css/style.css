@@ -1,0 +1,28 @@
+body{
+    background: url('../images/rain-drops.jpg')no-repeat center center fixed;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+     background-size: cover;
+    padding-top: 70px;
+    min-height: 100%;
+}
+.has_max_width{
+    max-width: 330px;
+    margin: auto;
+}
+#form_table{
+    max-width: 330px;
+}
+input[type=date]{max-width: 330px;}
+
+.footer .container
+{
+    /*background-color: rgba(255,255,255,0.2);*/
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    border-radius: 10px;
+}
+
+#fixture_tabs li h5,h6{ margin-top: -8px; }
+#fixture_tabs hr{ width: 50px; border-top: 1px solid #dddddd }

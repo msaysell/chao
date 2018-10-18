@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+{% load team_lookups %}
+{% load humanize %}
+{% block page_title %}League{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-md-10">
+            <h3>{{ current_season.get_name }}</h3>
+        </div>
+        <div class="col-md-2">
+            <div class="dropdown">
+                <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                    Other seasons
+                    <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                    {% for season in all_seasons %}
+                        <li><a href="{% url 'derby_darts:select_league' season.id %}">
+                            {% if season == current_season %}
+                                <span class="ion ion-arrow-right-b">&nbsp;</span>
+                            {% endif %}
+                            {{ season.get_name }}
+                        </a></li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+    {% regroup current_season.seasonstanding_set.all by season_section as sections %}
+    {% for section in sections %}
+        <div class="panel panel-default">
+            <div class="panel-heading">{{ section.grouper.name }}</div>
+            <div class="panel-body table-responsive">
+                <table class="table table-striped table-condensed table-hover">
+                <thead>
+                    <tr>
+                        <th>Team Name</th>
+                        <th>P<span class="hidden-xs">layed</span></th>
+                        <th>W<span class="hidden-xs">on</span></th>
+                        <th>L<span class="hidden-xs">ost</span></th>
+                        <th>F<span class="hidden-xs">or</span></th>
+                        <th>A<span class="hidden-xs">gainst</span></th>
+                        <th><span class="visible-xs">Ttl</span><span class="hidden-xs">Total Points</span></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% get_league_data section.list current_season as league_data %}
+                    {% for team_data in league_data %}
+                        <tr>
+                            <td>{{ team_data.team_name }}</td>
+                            <td>{{ team_data.games_played }}</td>
+                            <td>{{ team_data.games_won }}</td>
+                            <td>{{ team_data.games_lost }}</td>
+                            <td>{{ team_data.points_for }}</td>
+                            <td>{{ team_data.points_against }}</td>
+                            <td>{{ team_data.points }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+                </table>
+                {% for team_data in league_data %}
+                    {% if team_data.points_deducted > 0 %}
+                        <sub>{{ team_data.team_name }} deducted {{ team_data.points_deducted }} points</sub>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+    {% endfor %}
+{% endblock %}

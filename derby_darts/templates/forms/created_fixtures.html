@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block page-title %}
+    Fixtures
+{% endblock %}
+
+{% block content %}
+
+    <div class="panel panel-default table-responsive ">
+    <table class="table table-striped table-hover">
+        <thead>
+            <tr>
+                <th>Team</th>
+                {% for i in fixtures.1 %}
+                <th>{{ forloop.counter }}</th>
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+        {% for team, fixtures in fixtures.items %}
+            <tr>
+                <td>{{ team }}</td>
+                {% for fixture in fixtures %}
+                    <td>{{ fixture }}</td>
+                {% endfor %}
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    </div>
+{% endblock %}

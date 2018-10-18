@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block page_title %}Select Season{% endblock %}
+{% block content %}
+
+    <form class="form" method="post" ng-non-bindable>
+        {% csrf_token %}
+        <select name='season' class="form-control" id="seasonbox">
+            {% for season in seasons %}
+                <option value="{{ season.id }}">{{ season.name }}</option>
+            {% endfor %}
+        </select>
+        <div class="form-group">
+            <label for="sections">Number of sections</label>
+            <input id="sections" class="form-control" name="section_count" type="number"/>
+        </div>
+        <div class="form-group">
+            <label for="new_teams">New Teams</label>
+            <textarea id="new_teams" class="form-control" name="new_teams"></textarea>
+        </div>
+        <button class="btn btn-primary" type="submit">Submit</button>
+    </form>
+{% endblock %}

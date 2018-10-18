@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% block page_title %}Team Details{% endblock %}
+
+{% block content %}
+    <div class="container">
+    <div class="panel panel-default">
+      <div class="panel-heading"><h3>Teams</h3></div>
+      <div class="panel-body">
+        <p>Select a team for more information</p>
+      </div>
+        <ul class="list-group">
+        {% for team in team_list%}
+            <li class="list-group-item"><a href="{% url 'derby_darts:team_details' pk=team.pk %}">{{ team.name }}</a></li>
+        {% endfor %}
+        </ul>
+    </div>
+    </div>
+{% endblock %}

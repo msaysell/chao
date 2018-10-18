@@ -1,0 +1,33 @@
+
+{% extends 'base.html' %}
+{% block page_title %}Swap Teams{% endblock %}
+{% block content %}
+<form method="post" id="form_table">
+{% csrf_token %}
+    <div class="form-control">
+    <label>Season
+        <select name="season_id">
+            {% for season in seasons %}
+                <option value="{{ season.id }}">{{ season.name }}</option>
+            {% endfor %}
+        </select></label>
+    </div>
+    <div class="form-control">
+<label>Team A
+
+    <select name="team_a_id">
+        {% for team in teams %}
+            <option value="{{ team.id }}">{{ team.name }}</option>
+        {% endfor %}
+    </select></label></div>
+    <div class="form-control">
+    <label>
+        Team B
+    <select name="team_b_id">
+        {% for team in teams %}
+            <option value="{{ team.id }}">{{ team.name }}</option>
+        {% endfor %}
+    </select></label></div>
+<button type="submit">Submit</button>
+</form>
+{% endblock %}

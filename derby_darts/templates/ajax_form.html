@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block page-title %}
+    {{ form_title }}
+{% endblock %}
+
+{% block content %}
+    {% include 'base_form.html' %}
+    <div id="alerts"></div>
+    <script type="text/javascript">
+        $('#datepicker').datepicker({autoclose: true, dateFormat: "dd/mm/yy", todayHighlight: true});
+        var frm = $('#form_table');
+        frm.submit(function (e) {
+            e.preventDefault();
+            $.ajax({
+                type: frm.attr('method'),
+                url: frm.attr('action'),
+                data: frm.serialize(),
+                success: function (data) {
+                    $('select option:selected').remove();
+                    addMessage('alert-success', data.message);
+                },
+                error: function(XMLHttpRequest, textStatus, errorThrown) {
+                    console.log(XMLHttpRequest.responseText.message);
+                    addMessage('alert-danger', $.parseJSON(XMLHttpRequest.responseText).message);
+                }
+            });
+            return false;
+        });
+        function addMessage(css_class, message){
+            $('#alerts').prepend(
+                    $('<div class="alert alert-dismissible" role="alert">')
+                            .addClass(css_class)
+                            .text(message)
+                            .append(
+                                    $('<button type="button" class="close" data-dismiss="alert" aria-label="Close">')
+                                            .append($('<span aria-hidden="true">').html('&times;'))
+                            )
+            );
+        }
+    </script>
+{% endblock %}

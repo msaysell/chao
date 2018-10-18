@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+{% load team_lookups %}
+{% block page_title %}League Standings{% endblock %}
+
+{% block content %}
+    <script>
+        // using jQuery
+        function getCookie(name) {
+            var cookieValue = null;
+            if (document.cookie && document.cookie != '') {
+                var cookies = document.cookie.split(';');
+                for (var i = 0; i < cookies.length; i++) {
+                    var cookie = jQuery.trim(cookies[i]);
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+        var sections = function(){
+            var data = [];
+            $('#team_list > tr').each(
+                function(index, element)
+                {
+                    var team_name = $(element).find('>:first-child>:first-child').html();
+                    var value = parseInt($(element).find('>:last-child>:last-child').val());
+                    data.push({team_name: team_name, section:value});
+                }
+            );
+            $.post(
+                "{% url 'derby_darts:post_standings' %}",
+                {
+                    season: $('#season_list').val(),
+                    json_data: JSON.stringify(data),
+                    "type": 'clone',
+                    "csrfmiddlewaretoken": getCookie('csrftoken')
+                },
+                function(json) {
+                    //CALLBACK
+                },
+                "json"
+            );
+        };
+    </script>
+
+    <select id="season_list">
+        {% for season in seasons %}
+            <option value="{{ season.id }}">{{ season.season }} {{ season.year }}</option>
+        {% endfor %}
+    </select>
+
+
+    <table class="league_table">
+    <thead>
+        <td>Team</td>
+        <td>Section</td>
+    </thead>
+    <tbody id="team_list">
+    {% for team in teams %}
+        <tr>
+            <td><span>{{ team.name }}</span></td>
+            <td>
+                {% get_season_section team as team_section %}
+                <select>
+                    {% for i in "four" %}{# This is a hack where iterate over the characters.. four = 4 chars #}
+                        <option {% if team_section == forloop.counter %}selected="selected"{% endif %}>{{ forloop.counter }}</option>
+                    {% endfor %}
+                </select>
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+    </table>
+
+    <input type="button" onclick="sections()" value="Submit sections"/>
+
+{% endblock %}

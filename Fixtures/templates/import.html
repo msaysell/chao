@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% block page_title %}
+    Import Fixtures
+{% endblock %}
+
+{% block content %}
+    <script type="text/javascript">
+        $('#uploader').fileinput({showPreview: false});
+
+        function selectItems(idx){
+            $('#full_list option:selected').remove().appendTo('#section_list' + idx);
+        }
+        function deselectItems(idx){
+            $('#section_list'+ idx + ' option:selected').remove().appendTo('#full_list');
+        }
+    </script>
+
+    <form action="{% url 'Fixtures:import_season' season_id=season.id %}" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <label>Select a file to upload</label>
+        <input name="file_upload" id="uploader" type="file" class="file" data-show-preview="false">
+
+        <label>Add Teams to Sections</label>
+        <div class="row">
+            <div class="col-sm-12">
+                <select id="full_list" class="form-control" size="10" multiple="multiple">
+                    {% for team in teams %}
+                        <option value="{{ team.id }}">{{ team.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+            <div class="row">
+            {% for i in sections %}
+                    <div class="col-sm-2">
+                        <div class="row">
+                            <div class="col-sm-6"><button type="button" class="btn" onclick="selectItems({{ forloop.counter }})">Add</button></div>
+                            <div class="col-sm-6"><button type="button" class="btn" onclick="deselectItems({{ forloop.counter }})">Remove</button></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <select name="sections_{{ forloop.counter }}" id="section_list{{ forloop.counter }}" class="form-control" size="10" multiple="multiple"></select>
+                            </div>
+                        </div>
+                    </div>
+            {% endfor %}
+            </div>
+        <button class="btn btn-primary" type="submit">Submit</button>
+
+    </form>
+
+{% endblock %}

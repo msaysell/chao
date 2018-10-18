@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% block page_title %}
+    Set Results
+{% endblock %}
+
+{% block content %}
+    <script type="text/javascript">
+        function set_score(id, home, away){
+
+            var home_score = $('#home' + id).val();
+            var away_score = $('#away' + id).val();
+
+            $.ajax({
+                        url: "{% url 'Fixtures:set_score' %}",
+                        data: {id: id, home_score: home_score, away_score: away_score},
+                        success: function (data) {
+                            alert(data['data']);
+                        },
+                        error: function(data) {
+                        }
+                    })
+
+        }
+    </script>
+    {% regroup fixtures by date as sorted_fixtures %}
+    {% for group in sorted_fixtures %}
+        <h2>{{ group.grouper }}</h2>
+        {% for fixture in group.list %}
+            <div>{{ fixture.home_team }}
+                <input type="text" id="home{{ fixture.id }}"/>
+                  vs
+                <input type="text" id="away{{ fixture.id }}"/>
+                {{ fixture.away_team }}
+                <input type="button" value="Send Score" onclick="set_score({{ fixture.id }}, {{ fixture.home_team.id }}, {{ fixture.away_team.id }})"/>
+            </div>
+        {% endfor %}
+    {% endfor %}
+{% endblock %}

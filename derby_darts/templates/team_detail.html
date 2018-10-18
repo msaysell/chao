@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% block page_title %}{{ team.name }} Details{% endblock %}
+
+{% block content %}
+
+    <div class="panel panel-default">
+    <div class="panel-heading"><h1>{{ team.name }}</h1>
+    </div>
+    <div class="panel-body">
+    <h3>Players</h3>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>County?</th>
+            </tr>
+        </thead>
+    <tbody>
+    {% for player in team.players.all %}
+        <tr>
+        <td>{{ player.name }}</td>
+        <td>{% if player.is_county %}<span class="glyphicon glyphicon-ok" aria-hidden="true"></span>{% endif %}</td>
+        </tr>
+        {% empty %}
+        <tr><td>No player data</td></tr>
+    {% endfor %}
+
+    </tbody>
+    </table>
+    </div>
+    </div>
+{% endblock %}
