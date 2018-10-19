@@ -5,10 +5,10 @@ markdown2==2.3.0
 psycopg2==2.7.5
 setuptools==12.0.5
 djangorestframework==3.3.2
-django-angular==0.8.2
+django-angular==2.0.3
 django-cors-headers==1.2.2
 dj-database-url==0.5.0
 django-storages==1.6.5
-# boto3==1.4.7
-# whitenoise==4.1
+boto3==1.4.7
+whitenoise==4.1
 django-heroku==0.3.1
