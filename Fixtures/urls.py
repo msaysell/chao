@@ -1,6 +1,6 @@
 __author__ = 'Saysell'
 
-from django.conf.urls import patterns, url
+from django.conf.urls import url
 from Fixtures import views
 
 urlpatterns = [url(r"^fixtures_by_team$", views.fixtures_by_team, name='fixtures_by_team'),
