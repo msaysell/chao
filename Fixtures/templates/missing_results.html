@@ -4,7 +4,7 @@
 {% endblock %}
 
 {% block content %}
-<div class="container">
+<div class="container panel">
     {% for fixture in fixtures %}
         <p>{{ fixture.date }}: {{ fixture.home_team }} v {{ fixture.away_team }} ({{ fixture.season }})</p>
     {% endfor %}
