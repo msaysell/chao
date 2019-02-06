@@ -48,7 +48,8 @@ def existing_fixtures(request):
 def missing_results(request):
     fixtures = Fixture.objects.filter(season__league=request.league,
                                       result__isnull=True,
-                                      date__lte=datetime.now()).order_by("-date")
+                                      date__lte=datetime.now(),
+                                      competitionfixture__isnull=True).order_by("-date")
     return render(request, "missing_results.html", {"fixtures": fixtures})
 
 
