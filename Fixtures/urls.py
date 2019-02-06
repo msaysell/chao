@@ -12,6 +12,7 @@ urlpatterns = [url(r"^fixtures_by_team$", views.fixtures_by_team, name='fixtures
                url(r"^fixtures_for_team/([^/]+)$", views.fixtures_for_team, name='fixtures_for_team'),
                url(r"^fixtures_for_team/(?P<season_id>\d+)/(?P<team_name>.+)$", views.seasonal_fixtures_for_team, name='seasonal_fixtures_for_team'),
                url(r"^fixtures_by_date$", views.fixtures_by_date, name='fixtures_by_date'),
+               url(r'^missing$', views.missing_results, name="missing_results"),
                url(r"^existing_fixtures$", views.existing_fixtures, name='existing_fixtures'),
                url(r'^set_results$', views.set_results, name='set_results'),
                url(r'^update_results$', views.UpdateResultsView.as_view(paginate_by='10'), name='update_results'),

@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% block page_title %}
+    Missing Results
+{% endblock %}
+
+{% block content %}
+    {% for fixture in fixtures %}
+        <p>{{ fixture.date }}: {{ fixture.home_team }} v {{ fixture.away_team }} ({{ fixture.season }})</p>
+    {% endfor %}
+{% endblock %}

@@ -45,6 +45,13 @@ def existing_fixtures(request):
     return JsonResponse({"fixtures": serializer.data}, status=200)
 
 
+def missing_results(request):
+    fixtures = Fixture.objects.filter(season__league=request.league,
+                                      result__isnull=True,
+                                      date__lte=datetime.now()).order_by("-date")
+    return render(request, "missing_results.html", {"fixtures": fixtures})
+
+
 def set_common_fixture(request):
     if request.method == 'POST':
         date = datetime.strptime(request.POST['date'], '%d/%m/%Y')
