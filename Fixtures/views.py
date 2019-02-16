@@ -233,7 +233,8 @@ def import_fixtures(request):
 
             return render(request, 'import.html', {'teams': teams,
                                                    'season': season,
-                                                   'sections': xrange(sections)})
+                                                   'sections': list(range(sections))
+                                                   })
     return render(request, 'import_select_season.html', {'seasons': Season.objects.filter(league=request.league)})
 
 
