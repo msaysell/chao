@@ -1,5 +1,6 @@
 from datetime import datetime
 import json
+from io import StringIO
 from itertools import chain
 
 from django.contrib.auth.decorators import login_required
@@ -245,7 +246,7 @@ def import_season(request, season_id):
             return JsonResponse(status=100, data={'No file received'})
 
         season = Season.objects.get(id=season_id, league=request.league)
-        importer = CSVImporter(request.FILES['file_upload'].read())
+        importer = CSVImporter(StringIO(request.FILES['file_upload'].read().decode('utf-8'))
         contents = importer.read_file()
 
         if not contents:
