@@ -253,9 +253,7 @@ def import_season(request, season_id):
             return JsonResponse(status=100, data={'Unable to read the file'})
 
         date_strings = next(contents)
-        dates = list(map(lambda date_string: datetime.strptime(date_string, '%d/%m/%Y') if date_string else date_string,
-                    date_strings))
-
+        dates = [datetime.strptime(date_string, "%-d/%-m/%y") if date_string else date_string for date_string in date_strings]
         sections = {k.split('_')[1]: request.POST.getlist(k) for k, v in request.POST.items() if k.startswith('sections')}
 
         fixtures = [x for x in contents]
