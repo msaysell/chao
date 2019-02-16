@@ -245,7 +245,7 @@ def import_season(request, season_id):
             return JsonResponse(status=100, data={'No file received'})
 
         season = Season.objects.get(id=season_id, league=request.league)
-        importer = CSVImporter(request.FILES['file_upload'])
+        importer = CSVImporter(request.FILES['file_upload'].read())
         contents = importer.read_file()
 
         if not contents:

@@ -10,7 +10,7 @@ class CSVImporter(object):
         self.file_name = file_name
 
     def read_file(self):
-        return csv.reader(open(self.file_name, 'r'))
+        return csv.reader(self.file_name)
 
     def load_file(self):
         with open(self.file_name, 'rb') as csv_file:
