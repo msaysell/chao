@@ -186,7 +186,7 @@ def teams_for_section(request, section):
 
 def __teams_for_section_response(season, section_id):
     section_standings = season.seasonstanding_set.filter(season_section_id=section_id)
-    teams = list(map(lambda standing: standing.team.name, section_standings))
+    teams = [standing.team.name for standing in  section_standings]
 
     return JsonResponse({'teams': teams})
 

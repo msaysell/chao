@@ -16,7 +16,7 @@ class Command(BaseCommand):
 
         season, created = Season.objects.get_or_create(league=league, season='Summer', year=2015)
 
-        print 'Season created'
+        print('Season created')
 
         teams = self.__add_teams_to_league__(season)
         self.__add_fixtures__(teams, season)
@@ -40,7 +40,7 @@ class Command(BaseCommand):
             for team in section:
                 team_obj, created = Team.objects.get_or_create(name=team, league=season.league)
 
-                print team, ' added'
+                print(team, ' added')
 
                 teams.append(team_obj)
 

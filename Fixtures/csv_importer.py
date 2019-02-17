@@ -19,8 +19,8 @@ class CSVImporter(object):
             if not contents:
                 return False
 
-            date_strings = contents.next()
-            dates = map(lambda date_string: datetime.strptime(date_string, '%d/%m/%Y'), date_strings)
+            date_strings = next(contents)
+            dates = [datetime.strptime(date_string, '%d/%m/%Y') for date_string in  date_strings]
 
             section_one = ['Alv/Crewton', 'OMS A', 'Sinfin Moor', 'Coach and Horses', 'Brunswick',
                            'Duke of Clarence B', 'Courtyard B', 'Chad Lace', 'Station Inn', 'York Tavern']
@@ -46,8 +46,8 @@ class CSVImporter(object):
             if not contents:
                 return False
 
-            date_strings = contents.next()
-            dates = map(lambda date_string: datetime.strptime(date_string, '%d/%m/%Y'), date_strings)
+            date_strings = next(contents)
+            dates = [datetime.strptime(date_string, '%d/%m/%Y') for date_string in date_strings]
 
             fixture_rows = [x for x in contents]
 
