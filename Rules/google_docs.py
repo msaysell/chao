@@ -46,12 +46,19 @@ def read_strucutural_elements(elements):
             # The text in table cells are in nested Structural Elements and tables may be
             # nested.
             table = value.get('table')
-            for row in table.get('tableRows'):
+            text += "<table><thead><tr>"
+            for idx, row in enumerate(table.get('tableRows')):
                 cells = row.get('tableCells')
-                text += " | ".join([read_strucutural_elements(cell.get('content')).strip() for cell in cells])
-                text += "\r\n"
-                # for cell in cells:
-                #     text += read_strucutural_elements(cell.get('content'))
+                if (idx == 0):
+                    for cell in cells:
+                        text += "<th>{}</th>".format(read_strucutural_elements(cell.get('content')))
+                    text += "</tr></thead><tbody>"
+                else:
+                    text += "<tr>"
+                    for cell in cells:
+                        text += "<td>{}</td>".format(read_strucutural_elements(cell.get('content')))
+                    text += "<tr>"
+            text += "</tbody></table>"
         elif 'tableOfContents' in value:
             # The text in the TOC is also in a Structural Element.
             toc = value.get('tableOfContents')
