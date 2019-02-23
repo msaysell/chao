@@ -40,6 +40,7 @@ def read_strucutural_elements(elements):
                     indent = "    " * bullet.get("nestingLevel", 0)
                     text += indent + "- "
                 if heading.startswith("HEADING") and element_text.strip():
+                    text += "\r\n"
                     text += "#" * int(heading[-1]) + " "
                 text += element_text
         elif 'table' in value:
