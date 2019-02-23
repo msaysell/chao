@@ -47,7 +47,7 @@ def read_strucutural_elements(elements):
             # The text in table cells are in nested Structural Elements and tables may be
             # nested.
             table = value.get('table')
-            text += "<table><thead><tr>"
+            text += '<table class="table"><thead><tr>'
             for idx, row in enumerate(table.get('tableRows')):
                 cells = row.get('tableCells')
                 if (idx == 0):
