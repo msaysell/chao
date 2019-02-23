@@ -5,14 +5,17 @@ from django.shortcuts import render
 from markdown_deux import markdown
 from derby_darts.forms.model_forms import RuleForm, RuleCategoryForm
 from derby_darts.models import RuleCategory, League, Rule
+from .google_docs import google_doc_to_markdown
+import os
 
 __author__ = 'Saysell'
 
 
 def view_rules(request):
+    rules = google_doc_to_markdown(os.environ['RULES_DOC_ID'], os.environ["GOOGLE_SERVICE_ACCOUNT_JSON"])
     return render(request,
                   'view.html',
-                  {'categories': RuleCategory.objects.filter(league=request.league)})
+                  {"rules": rules})
 
 
 @login_required
