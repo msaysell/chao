@@ -15,7 +15,8 @@ class TeamsViewSet(ModelViewSet):
     permission_classes = [IsAuthenticatedOrReadOnly]
 
     def get_queryset(self):
-        return Team.objects.filter(league=self.request.league).order_by('name')
+        current_season = Season.objects.filter(league=self.request.league).order_by('-start_date').first()
+        return Team.objects.filter(league=self.request.league, seasonstanding__season=current_season).order_by('name')
 
 
 class WallPostViewSet(ModelViewSet):
