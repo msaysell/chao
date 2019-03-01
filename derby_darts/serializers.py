@@ -22,7 +22,7 @@ class TeamSerializer(ModelSerializer):
 
     class Meta:
         model = Team
-        fields = ['name', 'players']
+        fields = ['id', 'name', 'players']
 
 
 class TeamLeagueSerializer(ModelSerializer):
