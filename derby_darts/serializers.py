@@ -51,7 +51,7 @@ class TeamLeagueSerializer(ModelSerializer):
         return SeasonStanding.objects.only('section').get(team=obj, season=self.season).section
 
     def get_games_played(self, obj):
-        return obj.games_played
+        return obj.hgp + obj.agp
         # return self.team_fixtures.count()
         # return self.fixtures(obj).count()
 
