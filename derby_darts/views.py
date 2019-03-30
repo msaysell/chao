@@ -1,6 +1,7 @@
 import datetime
 import json
 
+from django.conf import settings
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm
@@ -387,8 +388,8 @@ class ReceiveMsgView(View):
         msg = '{}: {}'.format(player.team.name if player else from_number, text)
         send_mail(subject='Invalid Result Text Message',
                   message=msg,
-                  from_email='darts@leaguecity.uk',
-                  recipient_list=['mike@saysell.net'],
+                  from_email=settings.DEFAULT_FROM_EMAIL,
+                  recipient_list=os.environ.get('INCORRECT_MSG_EMAIL_TARGETS', '').split(','),
                   fail_silently=True)
 
         return JsonResponse(status=200, data={'message': msg})
