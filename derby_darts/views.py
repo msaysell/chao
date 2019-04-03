@@ -422,28 +422,16 @@ class ReceiveMsgView(View):
         if not missing_result_fixtures.exists():
             return self.handle_invalid_msg_format(from_number, text, date)
 
-        parsed_msg = text.strip('"').replace('-', ' ').split()
+        # Find the word won, win or lost and two single digits
+        parsed_msg_rexp = r'(w[oi]n|lost|\d)'
+        
+        parsed_msg = sorted(re.findall(parsed_msg_rexp, text.lower()))
 
-        if len(parsed_msg) < 3:
+        if len(parsed_msg) != 3:
             return self.handle_invalid_msg_format(from_number, text, date)
 
-        result = parsed_msg[0].lower()
-        if result == 'won':
-            team_won = True
-        elif result == 'lost':
-            team_won = False
-        else:
-            return self.handle_invalid_msg_format(from_number, text, date)
-
-        if not parsed_msg[1].isdigit() or not parsed_msg[2].isdigit():
-            return self.handle_invalid_msg_format(from_number, text, date)
-
-        winning_score = parsed_msg[1]
-        losing_score = parsed_msg[2]
-        if int(parsed_msg[1]) < int(parsed_msg[2]):
-            temp = winning_score
-            winning_score = losing_score
-            losing_score = temp
+        losing_score, winning_score, result = parsed_msg
+        team_won = result != 'lost'
 
         latest_fixture = missing_result_fixtures.order_by('-date').first()
         result_dict = {'fixture': latest_fixture}
