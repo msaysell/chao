@@ -34,13 +34,9 @@ class TeamLeagueStandingViewSet(ModelViewSet):
     def get_queryset(self):
         season = self.get_season(self.request.GET.get('pk'))
         teams = Team.objects.filter(league=self.request.league, seasonstanding__season=season)
-        played = Fixture.objects.filter(season=season, result__isnull=False).exclude(
-            Q(away_team__name__icontains="bye") | Q(home_team__name__icontains="bye"))
-        home_played = played.filter(home_team=OuterRef('pk')).values('pk')
-        away_played = played.filter(away_team=OuterRef('pk')).values('pk')
         
-        return teams.annotate(hgp=Count(Subquery(home_played)),
-                              agp=Count(Subquery(away_played)))
+        return teams.annotate(hgp=Count('home_team', distinct=True, filter=Q(home_team__season=season, home_team__result__isnull=False)),
+                              agp=Count('away_team', distinct=True, filter=Q(away_team__season=season, away_team__result__isnull=False)))
 
     def get_serializer_context(self):
         context = super(TeamLeagueStandingViewSet, self).get_serializer_context()
