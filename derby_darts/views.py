@@ -380,7 +380,10 @@ def post_standings(request):
 class ReceiveMsgView(View):
 
     def handle_invalid_msg_format(self, from_number, text, date):
-        prsd_date = datetime.datetime.strptime(date[:-5], "%Y-%m-%dT%H:%M:%S")
+        if date is not None:
+            prsd_date = datetime.datetime.strptime(date[:-5], "%Y-%m-%dT%H:%M:%S")
+        else:
+            prsd_date = datetime.datetime.now()
 
         msg = UnprocessedMessage.objects.create(text=text, date=prsd_date, sender=from_number)
 
