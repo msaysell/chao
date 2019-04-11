@@ -17,7 +17,7 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('season', models.CharField(max_length=50, choices=[(b'summer', b'summer'), (b'winter', b'winter')])),
                 ('year', models.IntegerField()),
-                ('league', models.ForeignKey(to='derby_darts.League')),
+                ('league', models.ForeignKey(to='derby_darts.League', on_delete=models.CASCADE)),
             ],
             options={
             },
@@ -28,8 +28,8 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('section', models.IntegerField()),
-                ('season', models.ForeignKey(to='derby_darts.Season')),
-                ('team', models.ForeignKey(to='derby_darts.Team')),
+                ('season', models.ForeignKey(to='derby_darts.Season', on_delete=models.CASCADE)),
+                ('team', models.ForeignKey(to='derby_darts.Team', on_delete=models.CASCADE)),
             ],
             options={
             },
@@ -46,7 +46,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='fixture',
             name='season',
-            field=models.ForeignKey(to='derby_darts.Season', null=True),
+            field=models.ForeignKey(to='derby_darts.Season', null=True, on_delete=models.CASCADE),
             preserve_default=True,
         ),
     ]

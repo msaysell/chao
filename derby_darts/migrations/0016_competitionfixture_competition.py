@@ -14,6 +14,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='competitionfixture',
             name='competition',
-            field=models.ForeignKey(to='derby_darts.Competition', null=True),
+            field=models.ForeignKey(to='derby_darts.Competition', null=True, on_delete=models.CASCADE),
         ),
     ]

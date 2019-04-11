@@ -1,5 +1,5 @@
 from django.contrib.auth.models import User
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.db import models
 from django.db.models.signals import post_save
 
@@ -14,12 +14,12 @@ class League(models.Model):
 
 class Tournament(models.Model):
     name = models.CharField(max_length=50)
-    league = models.ForeignKey(League)
+    league = models.ForeignKey(League, on_delete=models.CASCADE)
 
 
 class Team(models.Model):
     name = models.CharField(max_length=50)
-    league = models.ForeignKey(League, null=True)
+    league = models.ForeignKey(League, null=True, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.name
@@ -29,7 +29,7 @@ class Team(models.Model):
 
 
 class Player(models.Model):
-    team = models.ForeignKey(Team, null=True, related_name='players')
+    team = models.ForeignKey(Team, null=True, related_name='players', on_delete=models.CASCADE)
     name = models.CharField(max_length=256, default='')
     is_county = models.BooleanField(default=False)
     phone_number = models.CharField(max_length=24, null=True, blank=True)
@@ -48,7 +48,7 @@ class Season(models.Model):
     SEASONAL_CHOICES = ((SUMMER, SUMMER),
                         (WINTER, WINTER))
 
-    league = models.ForeignKey(League)
+    league = models.ForeignKey(League, on_delete=models.CASCADE)
     season = models.CharField(max_length=50, choices=SEASONAL_CHOICES, null=True)
     year = models.IntegerField(null=True)
     name = models.CharField(max_length=30, null=True)
@@ -65,7 +65,7 @@ class Season(models.Model):
 class Section(models.Model):
     class Meta:
         ordering = ['order']
-    league = models.ForeignKey(League, null=True)
+    league = models.ForeignKey(League, null=True, on_delete=models.CASCADE)
     name = models.CharField(max_length=30)
     order = models.IntegerField()
 
@@ -77,9 +77,9 @@ class SeasonStanding(models.Model):
     def __str__(self):
         return 'Standing for {}'.format(self.team.name)
 
-    season = models.ForeignKey(Season)
-    team = models.ForeignKey(Team)
-    season_section = models.ForeignKey(Section, null=True)
+    season = models.ForeignKey(Season, on_delete=models.CASCADE)
+    team = models.ForeignKey(Team, on_delete=models.CASCADE)
+    season_section = models.ForeignKey(Section, null=True, on_delete=models.CASCADE)
     section = models.IntegerField()
 
 
@@ -90,8 +90,8 @@ class SeasonPointDeduction(models.Model):
 
 
 class PlayerProfile(models.Model):
-    user = models.OneToOneField(User)
-    team = models.ForeignKey(Team, related_name='player_profiles')
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    team = models.ForeignKey(Team, related_name='player_profiles', on_delete=models.CASCADE)
     phone_number = models.CharField(max_length=24, null=True, blank=True)
     num_100s = models.IntegerField(default=0)
     num_140s = models.IntegerField(default=0)
@@ -102,7 +102,7 @@ class PlayerProfile(models.Model):
 
 
 class Competition(models.Model):
-    season = models.ForeignKey(Season)
+    season = models.ForeignKey(Season, on_delete=models.CASCADE)
     name = models.CharField(max_length=50, default='League')
 
     def __str__(self):
@@ -111,9 +111,9 @@ class Competition(models.Model):
 
 class Fixture(models.Model):
     date = models.DateField()
-    season = models.ForeignKey(Season, null=True)
-    home_team = models.ForeignKey(Team, related_name='home_team', null=True, blank=True)
-    away_team = models.ForeignKey(Team, related_name='away_team', null=True, blank=True)
+    season = models.ForeignKey(Season, null=True, on_delete=models.CASCADE)
+    home_team = models.ForeignKey(Team, related_name='home_team', null=True, blank=True, on_delete=models.CASCADE)
+    away_team = models.ForeignKey(Team, related_name='away_team', null=True, blank=True, on_delete=models.CASCADE)
 
     def __str__(self):
         return "{0} v {1}".format(self.get_home_team_name(), self.get_away_team_name())
@@ -135,7 +135,7 @@ class Fixture(models.Model):
 
 
 class CompetitionFixture(Fixture):
-    competition = models.ForeignKey(Competition, null=True)
+    competition = models.ForeignKey(Competition, null=True, on_delete=models.CASCADE)
 
     def get_home_team_name(self):
         if not self.home_team:
@@ -152,7 +152,7 @@ class Result(models.Model):
     def __str__(self):
         return 'Result added for {}'.format(self.fixture)
 
-    fixture = models.OneToOneField(Fixture)
+    fixture = models.OneToOneField(Fixture, on_delete=models.CASCADE)
     home_team_score = models.IntegerField(default=0, blank=False)
     away_team_score = models.IntegerField(default=0, blank=False)
     void_result = models.BooleanField(default=False)
@@ -160,14 +160,14 @@ class Result(models.Model):
 
 class RuleCategory(models.Model):
     name = models.CharField(max_length=250)
-    league = models.ForeignKey(League)
+    league = models.ForeignKey(League, on_delete=models.CASCADE)
 
     class Meta:
         ordering = ['id']
 
 
 class Rule(models.Model):
-    category = models.ForeignKey(RuleCategory)
+    category = models.ForeignKey(RuleCategory, on_delete=models.CASCADE)
     description = models.CharField(max_length=400)
 
     class Meta:
@@ -175,7 +175,7 @@ class Rule(models.Model):
 
 
 class UserPrivileges(models.Model):
-    user = models.OneToOneField(User, related_name='privileges')
+    user = models.OneToOneField(User, related_name='privileges', on_delete=models.CASCADE)
     can_modify_rules = models.BooleanField(default=False)
     can_create_wall_posts = models.BooleanField(default=False)
 
@@ -188,7 +188,7 @@ post_save.connect(create_user_privileges, sender=User)
 
 
 class WallPost(models.Model):
-    league = models.ForeignKey(League)
+    league = models.ForeignKey(League, on_delete=models.CASCADE)
     title = models.CharField(max_length=75)
     content = models.CharField(max_length=4000)
     date_created = models.DateTimeField(auto_now=True)

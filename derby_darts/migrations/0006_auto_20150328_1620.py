@@ -20,7 +20,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='fixture',
             name='away_team',
-            field=models.ForeignKey(related_name='away_team', to='derby_darts.Team', null=True),
+            field=models.ForeignKey(related_name='away_team', to='derby_darts.Team', null=True, on_delete=models.CASCADE),
             preserve_default=True,
         ),
         migrations.AlterField(

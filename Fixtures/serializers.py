@@ -6,11 +6,13 @@ from derby_darts.models import Fixture, Team, Result, Season, SeasonStanding, Se
 class TeamSerializer(ModelSerializer):
     class Meta:
         model = Team
+        fields = "__all__"
 
 
 class ResultSerializer(ModelSerializer):
     class Meta:
         model = Result
+        fields = "__all__"
 
 
 class FixtureSerializer(ModelSerializer):
@@ -20,6 +22,7 @@ class FixtureSerializer(ModelSerializer):
 
     class Meta:
         model = Fixture
+        fields = "__all__"
 
 
 class SectionSerializer(ModelSerializer):

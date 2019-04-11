@@ -14,6 +14,6 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='fixture',
             name='home_team',
-            field=models.ForeignKey(related_name='home_team', blank=True, to='derby_darts.Team', null=True),
+            field=models.ForeignKey(related_name='home_team', blank=True, to='derby_darts.Team', null=True, on_delete=models.CASCADE),
         ),
     ]

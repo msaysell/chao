@@ -18,7 +18,7 @@ class Migration(migrations.Migration):
                 ('title', models.CharField(max_length=75)),
                 ('content', models.CharField(max_length=400)),
                 ('date_created', models.DateTimeField(auto_now=True)),
-                ('league', models.ForeignKey(to='derby_darts.League')),
+                ('league', models.ForeignKey(to='derby_darts.League', on_delete=models.CASCADE)),
             ],
         ),
         migrations.AlterModelOptions(

@@ -16,8 +16,8 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('date', models.DateField()),
-                ('away_team', models.ForeignKey(related_name=b'away_team', to='derby_darts.Team')),
-                ('home_team', models.ForeignKey(related_name=b'home_team', to='derby_darts.Team')),
+                ('away_team', models.ForeignKey(related_name=b'away_team', to='derby_darts.Team', on_delete=models.CASCADE)),
+                ('home_team', models.ForeignKey(related_name=b'home_team', to='derby_darts.Team', on_delete=models.CASCADE)),
             ],
             options={
             },
@@ -39,7 +39,7 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('home_team_score', models.IntegerField()),
                 ('away_team_score', models.IntegerField()),
-                ('fixture', models.OneToOneField(to='derby_darts.Fixture')),
+                ('fixture', models.OneToOneField(to='derby_darts.Fixture', on_delete=models.CASCADE)),
             ],
             options={
             },
@@ -50,7 +50,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('name', models.CharField(max_length=50)),
-                ('league', models.ForeignKey(to='derby_darts.League')),
+                ('league', models.ForeignKey(to='derby_darts.League', on_delete=models.CASCADE)),
             ],
             options={
             },
@@ -106,13 +106,13 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='fixture',
             name='league',
-            field=models.ForeignKey(to='derby_darts.League'),
+            field=models.ForeignKey(to='derby_darts.League', on_delete=models.CASCADE),
             preserve_default=True,
         ),
         migrations.AddField(
             model_name='team',
             name='league',
-            field=models.ForeignKey(to='derby_darts.League', null=True),
+            field=models.ForeignKey(to='derby_darts.League', null=True, on_delete=models.CASCADE),
             preserve_default=True,
         ),
         migrations.AddField(

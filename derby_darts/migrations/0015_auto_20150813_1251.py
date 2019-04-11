@@ -14,7 +14,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='CompetitionFixture',
             fields=[
-                ('fixture_ptr', models.OneToOneField(parent_link=True, auto_created=True, primary_key=True, serialize=False, to='derby_darts.Fixture')),
+                ('fixture_ptr', models.OneToOneField(parent_link=True, auto_created=True, primary_key=True, serialize=False, to='derby_darts.Fixture', on_delete=models.CASCADE)),
             ],
             bases=('derby_darts.fixture',),
         ),

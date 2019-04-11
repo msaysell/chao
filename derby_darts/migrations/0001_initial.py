@@ -28,9 +28,9 @@ class Migration(migrations.Migration):
                 ('date', models.DateField()),
                 ('home_score', models.IntegerField()),
                 ('away_score', models.IntegerField()),
-                ('away_player', models.ForeignKey(related_name='away_player', to=settings.AUTH_USER_MODEL)),
-                ('competition', models.ForeignKey(to='derby_darts.Competition')),
-                ('home_player', models.ForeignKey(related_name='home_player', to=settings.AUTH_USER_MODEL)),
+                ('away_player', models.ForeignKey(related_name='away_player', to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE)),
+                ('competition', models.ForeignKey(to='derby_darts.Competition', on_delete=models.CASCADE)),
+                ('home_player', models.ForeignKey(related_name='home_player', to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE)),
             ],
             options={
             },
@@ -65,9 +65,9 @@ class Migration(migrations.Migration):
                 ('date', models.DateField()),
                 ('home_team_score', models.IntegerField()),
                 ('away_team_score', models.IntegerField()),
-                ('away_team', models.ForeignKey(related_name='away_team', to='derby_darts.Team')),
-                ('competition', models.ForeignKey(to='derby_darts.Competition')),
-                ('home_team', models.ForeignKey(related_name='home_team', to='derby_darts.Team')),
+                ('away_team', models.ForeignKey(related_name='away_team', to='derby_darts.Team', on_delete=models.CASCADE)),
+                ('competition', models.ForeignKey(to='derby_darts.Competition', on_delete=models.CASCADE)),
+                ('home_team', models.ForeignKey(related_name='home_team', to='derby_darts.Team', on_delete=models.CASCADE)),
             ],
             options={
             },
@@ -76,13 +76,13 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='playerprofile',
             name='team',
-            field=models.ForeignKey(to='derby_darts.Team'),
+            field=models.ForeignKey(to='derby_darts.Team', on_delete=models.CASCADE),
             preserve_default=True,
         ),
         migrations.AddField(
             model_name='playerprofile',
             name='user',
-            field=models.OneToOneField(to=settings.AUTH_USER_MODEL),
+            field=models.OneToOneField(to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE),
             preserve_default=True,
         ),
     ]

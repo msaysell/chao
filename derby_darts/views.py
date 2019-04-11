@@ -7,7 +7,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.mixins import UserPassesTestMixin, LoginRequiredMixin
 from django.core.mail import send_mail
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.db.models import Q
 from django.http import HttpResponse, JsonResponse, Http404, HttpResponseRedirect
 from django.shortcuts import render
@@ -23,7 +23,7 @@ from markdown_deux import markdown
 
 
 def user_can_edit(user):
-    return not user.is_anonymous() and user.privileges.can_create_wall_posts
+    return not user.is_anonymous and user.privileges.can_create_wall_posts
 
 
 @csrf_exempt
@@ -90,7 +90,7 @@ class PostListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super(PostListView, self).get_context_data(**kwargs)
-        can_edit = not self.request.user.is_anonymous() and self.request.user.privileges.can_create_wall_posts
+        can_edit = not self.request.user.is_anonymous and self.request.user.privileges.can_create_wall_posts
         if can_edit:
             context['can_edit'] = True
             context['new_form'] = WallPostForm()

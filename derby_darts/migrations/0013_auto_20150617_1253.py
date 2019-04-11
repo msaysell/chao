@@ -16,12 +16,12 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('name', models.CharField(default=b'League', max_length=50)),
-                ('season', models.ForeignKey(to='derby_darts.Season')),
+                ('season', models.ForeignKey(to='derby_darts.Season', on_delete=models.CASCADE)),
             ],
         ),
         migrations.AddField(
             model_name='fixture',
             name='competition',
-            field=models.ForeignKey(blank=True, to='derby_darts.Competition', null=True),
+            field=models.ForeignKey(blank=True, to='derby_darts.Competition', null=True, on_delete=models.CASCADE),
         ),
     ]

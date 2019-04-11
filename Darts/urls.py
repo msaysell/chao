@@ -1,7 +1,7 @@
 from django.contrib import sitemaps
-from django.core.urlresolvers import reverse
+from django.urls import reverse, path as url
 
-from django.conf.urls import include, url
+from django.conf.urls import include
 from django.contrib import admin
 from django.contrib.sitemaps.views import sitemap
 from django.views.decorators.csrf import csrf_exempt
@@ -27,15 +27,15 @@ sitemaps = {
     'static': StaticViewSitemap,
 }
 
-urlpatterns = [url(r'^$', PostListView.as_view(), name='home'),
-               url(r'^api/', include(router.urls, namespace='api')),
-               url(r'^2s3xYDK627En3B5E/$', csrf_exempt(ReceiveMsgView.as_view()), name='receive_msg'),
-               url(r'^contact$', ContactFormView.as_view(), name='contact'),
-               url(r'^', include('derby_darts.urls', namespace='derby_darts')),
-               url(r'^rules/', include('Rules.urls', namespace='Rules')),
-               url(r'^fixtures/', include('Fixtures.urls', namespace='Fixtures')),
-               url(r'^settings/', include('Dashboard.urls', namespace='Dashboard')),
-               url(r'^login/$', login_user, name='login'),
-               url(r'^sitemap\.xml$', sitemap, {'sitemaps': sitemaps}),
-               url(r'^xy/', include(admin.site.urls)),
+urlpatterns = [url(r'', PostListView.as_view(), name='home'),
+               url(r'api/', include((router.urls, 'api'), namespace='api')),
+               url(r'2s3xYDK627En3B5E/', csrf_exempt(ReceiveMsgView.as_view()), name='receive_msg'),
+               url(r'contact', ContactFormView.as_view(), name='contact'),
+               url(r'', include(('derby_darts.urls', 'derby_darts'), namespace='derby_darts')),
+               url(r'rules/', include(('Rules.urls', 'rules'), namespace='Rules')),
+               url(r'fixtures/', include(('Fixtures.urls', 'fixtures'), namespace='Fixtures')),
+               url(r'settings/', include(('Dashboard.urls', 'dashboard'), namespace='Dashboard')),
+               url(r'login/', login_user, name='login'),
+               url(r'sitemap\.xml', sitemap, {'sitemaps': sitemaps}),
+               url(r'xy/', admin.site.urls),
                ]

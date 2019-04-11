@@ -24,7 +24,7 @@ def get_total_points(team):
     return points
 
 
-@register.assignment_tag(name='get_season_section')
+@register.simple_tag(name='get_season_section')
 def get_season_section(team):
     return team.seasonstanding_set.all()[0].section
 
@@ -80,7 +80,7 @@ def get_league_data_for_team(standing, season):
     return data
 
 
-@register.assignment_tag(name='get_league_data')
+@register.simple_tag(name='get_league_data')
 def get_league_data(team_standings, season):
 
     data = [get_league_data_for_team(standing, season) for standing in team_standings]

@@ -52,8 +52,6 @@ class TeamLeagueSerializer(ModelSerializer):
 
     def get_games_played(self, obj):
         return obj.hgp + obj.agp
-        # return self.team_fixtures.count()
-        # return self.fixtures(obj).count()
 
     def get_games_won(self, obj):
         home_results = Q(home_team=obj, result__home_team_score__gt=F('result__away_team_score'))

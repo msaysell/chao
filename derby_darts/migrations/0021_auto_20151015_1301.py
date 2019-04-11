@@ -25,6 +25,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='seasonstanding',
             name='season_section',
-            field=models.ForeignKey(to='derby_darts.Section', null=True),
+            field=models.ForeignKey(to='derby_darts.Section', null=True, on_delete=models.CASCADE),
         ),
     ]

@@ -17,7 +17,7 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('home_team_score', models.IntegerField()),
                 ('away_team_score', models.IntegerField()),
-                ('fixture', models.ForeignKey(to='derby_darts.TeamFixture')),
+                ('fixture', models.ForeignKey(to='derby_darts.TeamFixture', on_delete=models.CASCADE)),
             ],
             options={
             },
