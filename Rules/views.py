@@ -6,13 +6,14 @@ from markdown_deux import markdown
 from derby_darts.forms.model_forms import RuleForm, RuleCategoryForm
 from derby_darts.models import RuleCategory, League, Rule
 from .google_docs import google_doc_to_markdown
+from django.conf import settings
 import os
 
 __author__ = 'Saysell'
 
 
 def view_rules(request):
-    rules = google_doc_to_markdown(os.environ['RULES_DOC_ID'], os.environ["GOOGLE_SERVICE_ACCOUNT_JSON"])
+    rules = google_doc_to_markdown(settings.RULES_DOC_ID, settings.GOOGLE_SERVICE_ACCOUNT_JSON)
     return render(request,
                   'view.html',
                   {"rules": rules})
