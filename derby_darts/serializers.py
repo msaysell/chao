@@ -9,6 +9,7 @@ from derby_darts.models import WallPost, Fixture, Team, SeasonStanding, Season, 
 class WallPostSerializer(ModelSerializer):
     class Meta:
         model = WallPost
+        fields = "__all__"
 
 
 class PlayerSerializer(ModelSerializer):
