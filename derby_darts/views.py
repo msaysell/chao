@@ -393,7 +393,7 @@ class ReceiveMsgView(View):
         send_mail(subject='Invalid Result Text Message',
                   message=msg,
                   from_email=settings.DEFAULT_FROM_EMAIL,
-                  recipient_list=os.environ.get('INCORRECT_MSG_EMAIL_TARGETS', '').split(','),
+                  recipient_list=settings.INCORRECT_MSG_EMAIL_TARGETS,
                   fail_silently=True)
 
         return JsonResponse(status=200, data={'message': msg})

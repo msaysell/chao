@@ -96,6 +96,7 @@ EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
 EMAIL_USE_TLS = os.environ.get('EMAIL_USE_TLS', 'True') == 'True'
 DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL')
+INCORRECT_MSG_EMAIL_TARGETS = os.environ.get('INCORRECT_MSG_EMAIL_TARGETS', '').split(',')
 
 MARKDOWN_DEUX_STYLES = {
     "default": {
