@@ -13,7 +13,7 @@ from django.db.models import Q
 from django.http import HttpResponse, JsonResponse, Http404, HttpResponseRedirect
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
-from django.views.generic import FormView, ListView, View, DetailView
+from django.views.generic import FormView, ListView, View, DetailView, TemplateView
 
 from derby_darts.forms.forms import ContactForm, AddPlayerForm
 from derby_darts.forms.model_forms import TeamForm, PlayerForm, FixtureForm, LeagueForm, WallPostForm, CompetitionForm, \
@@ -21,6 +21,7 @@ from derby_darts.forms.model_forms import TeamForm, PlayerForm, FixtureForm, Lea
 from .forms import model_forms
 from .models import Team, Season, SeasonStanding, Fixture, WallPost, Player, Result, UnprocessedMessage
 from markdown_deux import markdown
+from derby_darts.google_docs import get_calendar_events
 
 
 def user_can_edit(user):
@@ -80,6 +81,16 @@ class AddPlayerView(LoginRequiredMixin, FormView):
 
         return HttpResponseRedirect(team.get_absolute_url())
 
+
+class EventsView(TemplateView):
+    template_name = "meetings.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        events = get_calendar_events(settings.EVENTS_CALENDAR_ID, settings.GOOGLE_SERVICE_ACCOUNT_JSON, None)
+
+        context['events'] = events
+        return context
 
 class PostListView(ListView):
     model = WallPost

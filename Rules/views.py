@@ -5,7 +5,7 @@ from django.shortcuts import render
 from markdown_deux import markdown
 from derby_darts.forms.model_forms import RuleForm, RuleCategoryForm
 from derby_darts.models import RuleCategory, League, Rule
-from .google_docs import google_doc_to_markdown
+from derby_darts.google_docs import google_doc_to_markdown
 from django.conf import settings
 import os
 

@@ -1,10 +1,13 @@
 from django.db.models import Case, Count, IntegerField, Sum, OuterRef, Subquery, F, Q, When
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
-from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
-
+from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet, GenericViewSet
+from rest_framework.response import Response
+from django.conf import settings
 from derby_darts.models import WallPost, Team, Season, Fixture
 from derby_darts.serializers import WallPostSerializer, TeamLeagueSerializer, LeagueSeasonSerializer, TeamSerializer
+from datetime import datetime
 
+from derby_darts.google_docs import get_calendar_events
 
 class TeamsViewSet(ModelViewSet):
     serializer_class = TeamSerializer
@@ -50,3 +53,16 @@ class SeasonViewSet(ModelViewSet):
 
     def get_queryset(self):
         return Season.objects.filter(league=self.request.league)
+
+
+class EventsViewSet(GenericViewSet):
+    def get_queryset(self):
+        for evt in get_calendar_events(settings.EVENTS_CALENDAR_ID, settings.GOOGLE_SERVICE_ACCOUNT_JSON, datetime.now()):
+            yield {
+                "summary": evt['summary'],
+                "start": evt['start']['dateTime'],
+                "end": evt['end']['dateTime']
+            }
+
+    def list(self, request):
+        return Response(self.get_queryset())

@@ -81,3 +81,10 @@ def google_doc_to_markdown(rules_id, service_account_json_string):
     doc_content = re.sub(r"07\d{3}\s?\d{6}", "07--- ------", doc_content)
 
     return doc_content
+
+def get_calendar_events(calendar_id, service_acc_json, startDate):
+    info = json.loads(service_acc_json)
+    creds = service_account.Credentials.from_service_account_info(info)
+    service = build('calendar', 'v3', credentials=creds)
+    events_result = service.events().list(calendarId=calendar_id, singleEvents=True).execute()
+    return events_result.get('items', [])

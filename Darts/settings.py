@@ -142,7 +142,8 @@ LOGGING = {
     },
 }
 
-GOOGLE_SERVICE_ACCOUNT_JSON = os.environ["GOOGLE_SERVICE_ACCOUNT_JSON"]
-RULES_DOC_ID = os.environ['RULES_DOC_ID']
+GOOGLE_SERVICE_ACCOUNT_JSON = os.environ.get("GOOGLE_SERVICE_ACCOUNT_JSON")
+RULES_DOC_ID = os.environ.get('RULES_DOC_ID')
+EVENTS_CALENDAR_ID = os.environ.get('EVENTS_CALENDAR_ID')
 
 django_heroku.settings(locals(), databases=False, logging=False)

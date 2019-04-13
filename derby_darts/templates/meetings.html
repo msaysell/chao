@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% load team_lookups %}
+{% load utilities %}
+{% load humanize %}
+{% load markdown_deux_tags %}
+{% block page_title %}Meetings{% endblock %}
+
+{% block content %}
+<div class="panel-group" id="eventsAccordion" role="tablist" aria-multiselectable="true">
+{% for meeting in events %}
+    <div class="panel panel-default text-center">
+        <div class="panel-heading" role="tab" id="heading{{forloop.counter0}}">
+            <h2 class="panel-title">
+                    {{meeting.start.dateTime|parse_date_string|date }} - {{ meeting.summary }}
+            </h2>
+        </div>
+
+        <div class="panel-body">
+            <h4 class="card-title">{{ meeting.location }}</h4>
+            <div class="text-left">{{ meeting.description|markdown }}</div>
+        </div>
+    </div>
+{% endfor %}
+</div>
+{% endblock %}
