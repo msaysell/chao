@@ -4,6 +4,8 @@ from django.contrib import admin
 from derby_darts.models import Team, UserPrivileges, League, Season, Competition, CompetitionFixture, Result, Section, \
     Player, Fixture, SeasonPointDeduction, SeasonStanding, UnprocessedMessage
 
+from django.db.models import Q
+
 admin.site.register(League)
 admin.site.register(Competition)
 admin.site.register(CompetitionFixture)
@@ -12,7 +14,6 @@ admin.site.register(Team)
 admin.site.register(Season)
 admin.site.register(Section)
 admin.site.register(UserPrivileges)
-# End of admin py (Wrote this for test)
 
 
 @admin.register(Result)
@@ -34,10 +35,34 @@ class ResultAdmin(admin.ModelAdmin):
     get_fixture.admin_order_field = 'date'
 
 
+class PlayerPhoneNumberFilter(admin.SimpleListFilter):
+    title = "Has Phone Number"
+    parameter_name = 'has_phone_number'
+
+    def lookups(self, lookups, model_admin):
+        return ('True', 'Yes'),
+
+    def queryset(self, request, queryset):
+        if self.value() == 'True':
+            return queryset.filter(phone_number__isnull=False).exclude(Q(phone_number="-") | Q(phone_number=""))
+        return queryset
+
+
+class TeamFilter(admin.SimpleListFilter):
+    title = "Team"
+    parameter_name = "team"
+
+    def lookups(self, request, model_admin):
+        queryset = model_admin.get_queryset(request)
+        return queryset.filter(team__league=request.league).order_by('team__name').distinct('team__name').values_list('team_id', 'team__name')
+
+    def queryset(self, request, queryset):
+        return queryset.filter(team__league=request.league)
+
 @admin.register(Player)
 class PlayerAdmin(admin.ModelAdmin):
     list_display = ['name', 'team', 'phone_number']
-    list_filter = ['team']
+    list_filter = [TeamFilter, PlayerPhoneNumberFilter]
 
 
 @admin.register(SeasonPointDeduction)
