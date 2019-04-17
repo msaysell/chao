@@ -12,6 +12,7 @@ django-markdown-deux==1.0.5
 django-storages==1.6.5
 djangorestframework==3.9.2
 docutils==0.14
+fuzzysearch==0.6.1
 google-api-python-client==1.7.8
 google-auth==1.6.3
 google-auth-httplib2==0.0.3
