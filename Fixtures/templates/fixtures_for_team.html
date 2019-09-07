@@ -15,7 +15,7 @@
             $scope.sectionChange = function(){
                 $http({
                     method: 'GET',
-                    url: "{% url 'Fixtures:seasonal_teams_for_section' season_id=current_season.id section=0 %}".replace('0', $scope.section.season_section)
+                    url: "{% url 'Fixtures:seasonal_teams_for_section' season_id=current_season.id section=20170925 %}".replace('20170925', $scope.section.season_section)
                 }).success(function(response){
                     $scope.teams = response.teams;
                     $scope.team = response.teams[0];
