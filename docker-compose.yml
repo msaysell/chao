@@ -1,0 +1,19 @@
+version: '3'
+
+services:
+  db:
+    image: postgres
+    container_name: db
+  web:
+    image: darts
+    container_name: darts
+    command: /bin/sh -c "sh entry_script.sh"
+    environment: 
+      - DEBUG=True
+      - AWS_FEATURE=darts
+    volumes:
+      - .:/code
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
