@@ -4,16 +4,19 @@ services:
   db:
     image: postgres
     container_name: db
+    volumes:
+      - ./docker/db/data:/var/lib/postgresql/data
   web:
     image: darts
     container_name: darts
+    env_file: .env
     command: /bin/sh -c "sh entry_script.sh"
-    environment: 
-      - DEBUG=True
-      - AWS_FEATURE=darts
     volumes:
       - .:/code
     ports:
       - "8000:8000"
     depends_on:
       - db
+
+volumes: 
+  db_data:

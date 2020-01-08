@@ -86,5 +86,5 @@ def get_calendar_events(calendar_id, service_acc_json, startDate):
     info = json.loads(service_acc_json)
     creds = service_account.Credentials.from_service_account_info(info)
     service = build('calendar', 'v3', credentials=creds)
-    events_result = service.events().list(calendarId=calendar_id, singleEvents=True).execute()
+    events_result = service.events().list(calendarId=calendar_id, singleEvents=True, timeMin=startDate).execute()
     return events_result.get('items', [])

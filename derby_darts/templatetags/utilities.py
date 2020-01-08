@@ -11,5 +11,5 @@ def sub_range(page, difference):
 
 def parse_date_string(date):
     if date is not None:
-        return datetime.fromisoformat(date)
+        return datetime.fromisoformat(date.rstrip("Z"))
 register.filter('parse_date_string', parse_date_string)

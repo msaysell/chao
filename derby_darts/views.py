@@ -115,9 +115,11 @@ class EventsView(TemplateView):
     template_name = "meetings.html"
 
     def get_context_data(self, **kwargs):
+        current_season = Season.objects.filter(league=self.request.league).order_by("-start_date").first()
+        start_date = datetime.datetime.combine(current_season.start_date, datetime.datetime.min.time())
         context = super().get_context_data(**kwargs)
         events = get_calendar_events(
-            settings.EVENTS_CALENDAR_ID, settings.GOOGLE_SERVICE_ACCOUNT_JSON, None
+            settings.EVENTS_CALENDAR_ID, settings.GOOGLE_SERVICE_ACCOUNT_JSON, f"{start_date.isoformat()}Z"
         )
 
         context["events"] = events

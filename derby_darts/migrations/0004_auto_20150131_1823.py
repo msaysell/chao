@@ -1,6 +1,4 @@
 # -*- coding: utf-8 -*-
-from __future__ import unicode_literals
-
 from django.db import models, migrations
 
 
@@ -16,8 +14,8 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('date', models.DateField()),
-                ('away_team', models.ForeignKey(related_name=b'away_team', to='derby_darts.Team', on_delete=models.CASCADE)),
-                ('home_team', models.ForeignKey(related_name=b'home_team', to='derby_darts.Team', on_delete=models.CASCADE)),
+                ('away_team', models.ForeignKey(related_name='away_team', to='derby_darts.Team', on_delete=models.CASCADE)),
+                ('home_team', models.ForeignKey(related_name='home_team', to='derby_darts.Team', on_delete=models.CASCADE)),
             ],
             options={
             },
